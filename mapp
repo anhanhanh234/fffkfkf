@@ -299,7 +299,7 @@ function AddContent(type, text, script, script2)
 local keyword = "Auto TowerClimb"  -- chỉ cần chứa từ khóa
 if string.find(text, keyword) or string.find(text, "TP to LevelRace") then
     TextButton.Visible = false
-    delay(14, function()
+    delay(16, function()
         TextButton.Visible = true
     end)
 end
@@ -695,6 +695,10 @@ tpBtn.TextWrapped = false
 --tpBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
 tpBtn.TextColor3 = Color3.fromRGB(248,248,248)
 tpBtn.Parent = Frame2
+tpBtn.Visible = false  
+delay(16, function()  
+    tpBtn.Visible = true  
+end)
 
 tpBtn.MouseButton1Click:Connect(function()
     enabled = not enabled
