@@ -766,12 +766,7 @@ TeleportService:Teleport(placeId, LP)
 
 
 
-local TARGET_PLACE = 14836360962
-if game.PlaceId ~= TARGET_PLACE then
-    warn("Script chỉ chạy ở placeId "..TARGET_PLACE)
-    return
-enabled
-end
+
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
