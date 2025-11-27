@@ -62,6 +62,7 @@ elseif game.PlaceId == PLACE2 then
     ---------------------------------------------------------
     -- PLACEID 14836360962 → chạy loadstring mapop
     ---------------------------------------------------------
+ScreenGui1:Destroy()
     loadstring(game:HttpGet("https://pastefy.app/55JbDkIC/raw"))()
     
 
@@ -494,13 +495,6 @@ function AddContent(type, text, script, script2)
 end
 
 
-
-
-if game.PlaceId == TARGET_PLACEID then
-print("")
-else
-ScreenGui1:Destroy()
-end
 
 game.CoreGui.GhostGui.MainFrame.Title.Text = "by @RbxNayap(YTB)   "
 
