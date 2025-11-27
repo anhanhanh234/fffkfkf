@@ -31,7 +31,36 @@ if game.PlaceId == PLACE1 then
     -- Ví dụ teleport khi vào place này
     HRP.CFrame = CFrame.new(549, 4, -473)
 
-    
+    -- GUI chờ Tower riêng biệt
+do
+    local WaitGui = Instance.new("ScreenGui")
+    WaitGui.Name = "WaitTowerGui"
+    WaitGui.Parent = game:GetService("CoreGui")
+
+    local WaitFrame = Instance.new("Frame")
+    WaitFrame.Parent = WaitGui
+    WaitFrame.Size = UDim2.new(0.4, 0, 0.1, 0)
+    WaitFrame.Position = UDim2.new(0.3, 0, 0.45, 0)
+    WaitFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    WaitFrame.BorderSizePixel = 0
+
+    local WaitText = Instance.new("TextLabel")
+    WaitText.Parent = WaitFrame
+    WaitText.Size = UDim2.new(1, 0, 1, 0)
+    WaitText.BackgroundTransparency = 1
+    WaitText.Font = Enum.Font.SourceSansBold
+    WaitText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    WaitText.TextScaled = true
+    WaitText.TextWrapped = true
+    WaitText.Text = "Loading 'TP to LevelRace' and 'Auto TowerClimb' Buttons..."
+
+    -- Chạy 16 giây rồi destroy GUI
+    task.delay(16, function()
+        if WaitGui and WaitGui.Parent then
+            WaitGui:Destroy()
+        end
+    end)
+end
     
     -- TODO: Thêm toàn bộ logic Auto TowerClimb / Connect4Frenzy / Hover
     print("")
