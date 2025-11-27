@@ -16,18 +16,22 @@ end)
 if getgenv().MyScriptAlreadyExecuted then return end
 getgenv().MyScriptAlreadyExecuted = true
 
-local TARGET_PLACEID = 13451596695
 
+local PLACE1 = 13451596695  -- Chạy script hiện tại
+local PLACE2 = 14836360962  -- Chạy mapop
 
-if game.PlaceId == TARGET_PLACEID then
+if game.PlaceId == PLACE1 then
+    ---------------------------------------------------------
+    -- SCRIPT HIỆN TẠI PLACEID 13451596695
+    ---------------------------------------------------------
     local player = game.Players.LocalPlayer
     local char = player.Character or player.CharacterAdded:Wait()
     local HRP = char:WaitForChild("HumanoidRootPart")
 
-    -- Teleport ngay lập tức
+    -- Ví dụ teleport khi vào place này
     HRP.CFrame = CFrame.new(549, 4, -473)
 
-    -- WAIT GUI
+    -- GUI chờ Tower
     local WaitGui = Instance.new("ScreenGui")
     WaitGui.Name = "WaitTowerGui"
     WaitGui.Parent = game.CoreGui
@@ -50,7 +54,21 @@ if game.PlaceId == TARGET_PLACEID then
 
     task.wait(16)
     WaitGui:Destroy()
+
+    -- TODO: Thêm toàn bộ logic Auto TowerClimb / Connect4Frenzy / Hover
+    print("")
+
+elseif game.PlaceId == PLACE2 then
+    ---------------------------------------------------------
+    -- PLACEID 14836360962 → chạy loadstring mapop
+    ---------------------------------------------------------
+    loadstring(game:HttpGet("https://pastefy.app/55JbDkIC/raw"))()
+    
+
+else
+    warn("")
 end
+
 
 
 local ScreenGui1 = Instance.new("ScreenGui")
