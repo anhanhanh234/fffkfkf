@@ -751,3 +751,229 @@ local placeId = game.PlaceId
 -- Rejoin server
 TeleportService:Teleport(placeId, LP)
 ]])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local TARGET_PLACE = 14836360962
+if game.PlaceId ~= TARGET_PLACE then
+    warn("Script chỉ chạy ở placeId "..TARGET_PLACE)
+    return
+enabled
+end
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local playerGui = LocalPlayer:WaitForChild("PlayerGui")
+local HUD = playerGui:WaitForChild("HUD")
+local ColorFrame = HUD:WaitForChild("Connect4FrenzyColorFrame")
+local Gradient = ColorFrame.Frame:WaitForChild("UIGradient")
+
+local World = Workspace:WaitForChild("World")
+local MiniGameArenas = World:WaitForChild("MiniGameArenas")
+local ArenaRoot = MiniGameArenas:WaitForChild("Connect4Frenzy")
+
+local CloudsFolder = ArenaRoot.CloudsAndTokenSpawnPoints.Clouds
+local BoardFolder = ArenaRoot.Board
+
+local CloudPlatformCount = 6
+local TeleportDelay = 0.8
+local enabled = false
+
+--========================================================
+-- COLOR FUNCTIONS
+--========================================================
+local function GetTargetColor()
+    return Gradient.Color.Keypoints[1].Value
+end
+
+local function ColorsMatch(c1,c2)
+    return math.floor(c1.R*255) == math.floor(c2.R*255)
+       and math.floor(c1.G*255) == math.floor(c2.G*255)
+       and math.floor(c1.B*255) == math.floor(c2.B*255)
+end
+
+--========================================================
+-- TELEPORT FUNCTION
+--========================================================
+local function TeleportTo(part)
+    if Character and Character.PrimaryPart and part and part:IsA("BasePart") then
+        -- Thêm offset Y để nhân vật đứng cao hơn part
+        local offsetY = 0 -- tăng nếu part quá thấp
+        Character:PivotTo(part.CFrame + Vector3.new(0, offsetY, 0))
+    end
+end
+
+--========================================================
+-- LOOP SCRIPT 1 (Cloud + Board với logic cũ #1)
+--========================================================
+task.spawn(function()
+    while task.wait(TeleportDelay) do
+        if enabled then
+            local matrixColor = GetTargetColor()
+            local targetPlatform = nil
+            
+            for i = 1, CloudPlatformCount do
+                local cloud = CloudsFolder:FindFirstChild("CloudPlatform"..i)
+                if cloud and cloud:FindFirstChild("TokenSpawnPoint") then
+                    local tokenSpawn = cloud.TokenSpawnPoint
+                    local token = tokenSpawn:FindFirstChild("Token")
+                    local coin = token and token:FindFirstChild("C4FCoin")
+                    if coin and ColorsMatch(coin.Color, matrixColor) then
+                        targetPlatform = cloud
+                        break
+                    end
+                end
+            end
+
+            if targetPlatform then
+                TeleportTo(targetPlatform)
+                task.wait(TeleportDelay+0.5)
+            end
+
+            local foundSpot = false
+            for row = 1,4 do
+                for col = 1,4 do
+                    local name = row.."_"..col
+                    local cell = BoardFolder:FindFirstChild(name)
+                    if cell then
+                        local coin
+                        for _,v in ipairs(cell:GetDescendants()) do
+                            if v.Name=="C4FCoin" then coin=v break end
+                        end
+
+                        if not coin or not ColorsMatch(coin.Color, matrixColor) then
+                            TeleportTo(cell)
+                            foundSpot=true
+                            break
+                        end
+                    end
+                end
+                if foundSpot then break end
+            end
+        end
+    end
+end)
+
+--========================================================
+-- LOOP SCRIPT 2 (Cloud + Board với logic cũ #2)
+--========================================================
+task.spawn(function()
+    while true do
+        task.wait(0.6)
+        if enabled then
+            local targetColor = GetTargetColor()
+            local foundCloud = false
+
+            for _,cloud in ipairs(CloudsFolder:GetChildren()) do
+                local sp = cloud:FindFirstChild("TokenSpawnPoint")
+                local token = sp and sp:FindFirstChild("Token")
+                local coin = token and token:FindFirstChild("C4FCoin")
+                if coin and ColorsMatch(coin.Color,targetColor) then
+                    TeleportTo(sp)
+                    foundCloud=true
+                    break
+                end
+            end
+
+            if not foundCloud then
+                for r=1,4 do
+                    for c=1,4 do
+                        local name = r.."_"..c
+                        local cell = BoardFolder:FindFirstChild(name)
+                        if cell then
+                            local coin
+                            for _,v in ipairs(cell:GetDescendants()) do
+                                if v.Name=="C4FCoin" then coin=v break end
+                            end
+                            if not coin or not ColorsMatch(coin.Color,targetColor) then
+                                TeleportTo(cell)
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
+
+--========================================================
+-- GUI ON/OFF
+--========================================================
+local ScreenGui = Instance.new("ScreenGui",game.CoreGui)
+ScreenGui.Name = "C4FAuto"
+
+local Frame = Instance.new("Frame",ScreenGui)
+Frame.Size = UDim2.new(0,100,0,50)
+Frame.Position = UDim2.new(0.4,0,0.2,30)
+Frame.BackgroundColor3 = Color3.fromRGB(35,35,35)
+Frame.Active = true
+Frame.Draggable = true
+
+local Toggle = Instance.new("TextButton",Frame)
+Toggle.Size = UDim2.new(1.5,0,0.5,0)
+Toggle.Text = "Auto Connect4Frenzy[OFF]"
+Toggle.BackgroundColor3 = Color3.fromRGB(140,0,0)
+Toggle.TextColor3 = Color3.fromRGB(255,255,255)
+
+Toggle.MouseButton1Click:Connect(function()
+    enabled = not enabled
+    Toggle.Text = enabled and "Auto Connect4Frenzy[ON]" or "Auto Connect4Frenzy[OFF]"
+    Toggle.BackgroundColor3 = enabled and Color3.fromRGB(0,160,0) or Color3.fromRGB(140,0,0)
+end)
+
+
+
+
+
+--========================================================
+-- HOVER TRÊN KHÔNG TRUNG (FULL SCRIPT RIÊNG)
+--========================================================
+
+-- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+-- Player
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+
+--========================================================
+-- Tạo BodyPosition giữ nhân vật yên trên không trung
+--========================================================
+local HoverBP = HumanoidRootPart:FindFirstChild("HoverBP")
+if not HoverBP then
+    HoverBP = Instance.new("BodyPosition")
+    HoverBP.Name = "HoverBP"
+    HoverBP.MaxForce = Vector3.new(1e5, 1e5, 1e5)  -- lực giữ nhân vật
+    HoverBP.P = 1e4      -- độ cứng
+    HoverBP.D = 500       -- giảm chấn
+    HoverBP.Position = HumanoidRootPart.Position  -- vị trí hiện tại
+    HoverBP.Parent = HumanoidRootPart
+end
+
+--========================================================
+-- Loop cập nhật vị trí liên tục
+--========================================================
+RunService.RenderStepped:Connect(function()
+    if HoverBP then
+        -- Cập nhật vị trí để giữ nguyên độ cao
+        HoverBP.Position = HumanoidRootPart.Position
+    end
+end)
