@@ -496,7 +496,7 @@ end
 
 
 
-game.CoreGui.GhostGui.MainFrame.Title.Text = "by @RbxNayap(YTB)   "
+--game.CoreGui.GhostGui.MainFrame.Title.Text = "by @RbxNayap(YTB)   "
 
 TextLabel = AddContent("TextLabel")
 TextLabel.Text = "_Backpack UGC_"
