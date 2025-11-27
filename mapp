@@ -31,27 +31,7 @@ if game.PlaceId == PLACE1 then
     -- Ví dụ teleport khi vào place này
     HRP.CFrame = CFrame.new(549, 4, -473)
 
-    -- GUI chờ Tower
-    local WaitGui = Instance.new("ScreenGui")
-    WaitGui.Name = "WaitTowerGui"
-    WaitGui.Parent = game.CoreGui
-
-    local WaitFrame = Instance.new("Frame")
-    WaitFrame.Parent = WaitGui
-    WaitFrame.Size = UDim2.new(0.4, 0, 0.1, 0)
-    WaitFrame.Position = UDim2.new(0.3, 0, 0.45, 0)
-    WaitFrame.BackgroundColor3 = Color3.fromRGB(50,50,50)
-
-    local WaitText = Instance.new("TextLabel")
-    WaitText.Parent = WaitFrame
-    WaitText.Size = UDim2.new(1,0,1,0)
-    WaitText.BackgroundTransparency = 1
-    WaitText.Font = Enum.Font.SourceSansBold
-    WaitText.TextColor3 = Color3.fromRGB(255,255,255)
-    WaitText.TextScaled = true
-    WaitText.TextWrapped = true
-    WaitText.Text = "Loading 'TP to LevelRace' and 'Auto TowerClimb' Buttons..."
-WaitText.Visible = false
+    
     
     -- TODO: Thêm toàn bộ logic Auto TowerClimb / Connect4Frenzy / Hover
     print("")
