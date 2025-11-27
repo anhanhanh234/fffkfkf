@@ -47,7 +47,7 @@ do
     local WaitText = Instance.new("TextLabel")
     WaitText.Parent = WaitFrame
     WaitText.Size = UDim2.new(1, 0, 1, 0)
-    WaitText.BackgroundTransparency = 1
+    WaitText.BackgroundTransparency = 0.5
     WaitText.Font = Enum.Font.SourceSansBold
     WaitText.TextColor3 = Color3.fromRGB(255, 255, 255)
     WaitText.TextScaled = true
@@ -93,7 +93,7 @@ Frame1.Name = "MainFrame"
 
 Frame1.BackgroundColor3 = Color3.fromRGB(17,17,17)
 
-Frame1.Position = UDim2.new(0.3,0,0.05)
+Frame1.Position = UDim2.new(0.3,0,0.2)
 
 Frame1.Size = UDim2.new(0,165,0,34,0)
 
