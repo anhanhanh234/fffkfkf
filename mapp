@@ -52,7 +52,7 @@ if game.PlaceId == PLACE1 then
     WaitText.TextWrapped = true
     WaitText.Text = "Waiting for Tower to Spawn..."
 
-    task.wait(16)
+    task.wait(0.1)
     WaitGui:Destroy()
 
     -- TODO: Thêm toàn bộ logic Auto TowerClimb / Connect4Frenzy / Hover
@@ -293,6 +293,17 @@ function AddContent(type, text, script, script2)
     local TextButton = Instance.new("TextButton") 
 
     TextButton.Parent = Frame
+
+
+-- Chèn ngay sau TextButton.Parent = Frame
+local keyword = "Auto TowerClimb"  -- chỉ cần chứa từ khóa
+if string.find(text, keyword) or string.find(text, "TP to LevelRace") then
+    TextButton.Visible = false
+    delay(14, function()
+        TextButton.Visible = true
+    end)
+end
+
 
     TextButton.BackgroundTransparency = 0
 
