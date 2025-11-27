@@ -1,13 +1,9 @@
--- Chỉ chạy ở đúng game PlaceId
-local targetPlaceId = 13451596695
 
-if game.PlaceId ~= targetPlaceId then
-    warn("❌ Wrong game! Script will stop.")
-    return
-end
 
 if getgenv().MyScriptAlreadyExecuted then return end
 getgenv().MyScriptAlreadyExecuted = true
+
+local targetPlaceId = 13451596695
 
 --===[ QueueOnTeleport Loader ]===--
 local QueueOnTeleport = queue_on_teleport or syn.queue_on_teleport
@@ -19,46 +15,7 @@ pcall(function()
     end
 end)
 
--- Lấy player và HumanoidRootPart
-local LP = game:GetService("Players").LocalPlayer
-local Char = LP.Character or LP.CharacterAdded:Wait()
-local HRP = Char:WaitForChild("HumanoidRootPart")
 
--- Teleport ngay
-HRP.CFrame = CFrame.new(549, 4, -473)
-
--- Tạo ScreenGui riêng
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "WaitTowerGui"
-screenGui.Parent = game.CoreGui  -- parent trực tiếp vào CoreGui
-
--- Tạo Frame ở giữa màn hình
-local waitFrame = Instance.new("Frame")
-waitFrame.Size = UDim2.new(0.4, 0, 0.1, 0)  -- rộng 40% màn hình, cao 10%
-waitFrame.Position = UDim2.new(0.3, 0, 0.45, 0)  -- đặt giữa màn hình
-waitFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-waitFrame.BackgroundTransparency = 0.2
-waitFrame.BorderSizePixel = 0
-waitFrame.Parent = screenGui
-
--- Tạo TextLabel thông báo
-local waitLabel = Instance.new("TextLabel")
-waitLabel.Size = UDim2.new(1, 0, 1, 0)
-waitLabel.Position = UDim2.new(0, 0, 0, 0)
-waitLabel.BackgroundTransparency = 1
-waitLabel.Font = Enum.Font.SourceSansBold
-waitLabel.TextColor3 = Color3.fromRGB(248, 248, 248)
-waitLabel.TextSize = 24
-waitLabel.TextScaled = true
-waitLabel.TextWrapped = true
-waitLabel.Text = "Waiting for Tower to Spawn..."
-waitLabel.Parent = waitFrame
-
--- Delay 15 giây
-task.wait(16)
-
--- Xóa thông báo
-screenGui:Destroy()
 
 
 
@@ -487,6 +444,42 @@ end
 
 
 
+if game.PlaceId == targetPlaceId then
+    -- Lấy player và HRP
+    local LP = game:GetService("Players").LocalPlayer
+    local Char = LP.Character or LP.CharacterAdded:Wait()
+    local HRP = Char:WaitForChild("HumanoidRootPart")
+
+    -- Teleport ngay
+    HRP.CFrame = CFrame.new(549, 4, -473)
+
+    -- GUI Wait spawn
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "WaitTowerGui"
+    screenGui.Parent = game.CoreGui
+
+    local waitFrame = Instance.new("Frame")
+    waitFrame.Size = UDim2.new(0.4, 0, 0.1, 0)
+    waitFrame.Position = UDim2.new(0.3, 0, 0.45, 0)
+    waitFrame.BackgroundColor3 = Color3.fromRGB(50,50,50)
+    waitFrame.BackgroundTransparency = 0.2
+    waitFrame.BorderSizePixel = 0
+    waitFrame.Parent = screenGui
+
+    local waitLabel = Instance.new("TextLabel")
+    waitLabel.Size = UDim2.new(1,0,1,0)
+    waitLabel.BackgroundTransparency = 1
+    waitLabel.Font = Enum.Font.SourceSansBold
+    waitLabel.TextColor3 = Color3.fromRGB(248, 248, 248)
+    waitLabel.TextSize = 24
+    waitLabel.TextScaled = true
+    waitLabel.TextWrapped = true
+    waitLabel.Text = "Waiting for Tower to Spawn..."
+    waitLabel.Parent = waitFrame
+
+    task.wait(16)
+    screenGui:Destroy()
+end
 
 
 game.CoreGui.GhostGui.MainFrame.Title.Text = "by @RbxNayap   "
