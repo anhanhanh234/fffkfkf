@@ -1,3 +1,10 @@
+-- Chỉ chạy ở đúng game PlaceId
+local targetPlaceId = 13451596695
+
+if game.PlaceId ~= targetPlaceId then
+    warn("❌ Wrong game! Script will stop.")
+    return
+end
 
 if getgenv().MyScriptAlreadyExecuted then return end
 getgenv().MyScriptAlreadyExecuted = true
