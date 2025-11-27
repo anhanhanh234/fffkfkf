@@ -512,6 +512,15 @@ ScreenGui1:Destroy()
 end
 
 --game.CoreGui.GhostGui.MainFrame.Title.Text = "by @RbxNayap(YTB)   "
+local CoreGui = game:GetService("CoreGui")
+
+-- Chờ từng cấp để tránh nil
+local GhostGui = CoreGui:WaitForChild("GhostGui")
+local MainFrame = GhostGui:WaitForChild("MainFrame")
+local Title = MainFrame:WaitForChild("Title")
+
+-- Thay đổi text
+Title.Text = "Updated v2.3   "
 
 TextLabel = AddContent("TextLabel")
 TextLabel.Text = "_Backpack UGC_"
