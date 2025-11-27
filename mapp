@@ -494,7 +494,7 @@ function AddContent(type, text, script, script2)
 
 end
 
-if game.PlaceId == PLACE2 then
+if game.PlaceId == PLACE1 then
 print("")
 else
 ScreenGui1:Destroy()
