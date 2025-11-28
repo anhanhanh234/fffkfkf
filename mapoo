@@ -2,7 +2,7 @@
 
 --===[ QueueOnTeleport Loader ]===--
 local QueueOnTeleport = queue_on_teleport or syn.queue_on_teleport
-local SCRIPT_URL = "https://raw.githubusercontent.com/anhanhanh234/fffkfkf/refs/heads/main/mapp"
+local SCRIPT_URL = "https://raw.githubusercontent.com/anhanhanh234/fffkfkf/refs/heads/main/mapoo"
 
 pcall(function()
     if QueueOnTeleport then
@@ -24,46 +24,7 @@ if game.PlaceId == PLACE1 then
     ---------------------------------------------------------
     -- SCRIPT HIỆN TẠI PLACEID 13451596695
     ---------------------------------------------------------
-    local player = game.Players.LocalPlayer
-    local char = player.Character or player.CharacterAdded:Wait()
-    local HRP = char:WaitForChild("HumanoidRootPart")
-
-    -- Ví dụ teleport khi vào place này
-    HRP.CFrame = CFrame.new(549, 4, -473)
-
-    -- GUI chờ Tower riêng biệt
-do
-    local WaitGui = Instance.new("ScreenGui")
-    WaitGui.Name = "WaitTowerGui"
-    WaitGui.Parent = game:GetService("CoreGui")
-
-    local WaitFrame = Instance.new("Frame")
-    WaitFrame.Parent = WaitGui
-    WaitFrame.Size = UDim2.new(0.4, 0, 0.1, 0)
-    WaitFrame.Position = UDim2.new(0.3, 0, 0.45, 0)
-    WaitFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    WaitFrame.BorderSizePixel = 0
-
-    local WaitText = Instance.new("TextLabel")
-    WaitText.Parent = WaitFrame
-    WaitText.Size = UDim2.new(1, 0, 1, 0)
-    WaitText.BackgroundTransparency = 0.5
-    WaitText.Font = Enum.Font.SourceSansBold
-    WaitText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    WaitText.TextScaled = true
-    WaitText.TextWrapped = true
-    WaitText.Text = "Loading 'TP to LevelRace' and 'Auto TowerClimb' Buttons..."
-
-    -- Chạy 16 giây rồi destroy GUI
-    task.delay(16, function()
-        if WaitGui and WaitGui.Parent then
-            WaitGui:Destroy()
-        end
-    end)
-end
-    
-    -- TODO: Thêm toàn bộ logic Auto TowerClimb / Connect4Frenzy / Hover
-    print("")
+     print("")
 
 elseif game.PlaceId == PLACE2 then
     ---------------------------------------------------------
@@ -301,20 +262,6 @@ function AddContent(type, text, script, script2)
 
     TextButton.Parent = Frame
 
-
--- Chèn ngay sau TextButton.Parent = Frame
-local keyword = "Auto TowerClimb"  -- chỉ cần chứa từ khóa
-if string.find(text, keyword) or string.find(text, "TP to LevelRace") then
-
-    TextButton.Visible = false
-
-    delay(16, function()
-
-        TextButton.Visible = true
-    end)
-end
-
-
     TextButton.BackgroundTransparency = 0
 
     TextButton.Position = UDim2.new(0.1,0,0.15)
@@ -530,13 +477,13 @@ local MainFrame = GhostGui:WaitForChild("MainFrame")
 local Title = MainFrame:WaitForChild("Title")
 
 -- Thay đổi text
-Title.Text = "Updated v2.3   "
+Title.Text = "by @RbxNayap (YTB)  "
 
 TextLabel = AddContent("TextLabel")
-TextLabel.Text = "_Backpack UGC_"
+TextLabel.Text = "_Bow UGC_"
 
 -- Nút 1: Teleport To inigames
-AddContent("TextButton", "TP to Minigames", [[
+AddContent("TextButton", "TP to UGC", [[
 local LP = game:GetService("Players").LocalPlayer
 local HRP = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
 if HRP then
@@ -544,21 +491,24 @@ if HRP then
 end
 ]])
 
+                            
 -- Nút 2: Teleport 388,33,1
-AddContent("TextButton", "TP to TokenPillar", [[
+AddContent("TextButton", "TP to Fenzy", [[
 local LP = game:GetService("Players").LocalPlayer
 local HRP = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
 if HRP then
-    HRP.CFrame = CFrame.new(530, -2, -478)
+    HRP.CFrame = CFrame.new(678, 43, -178)
 end
 ]])
 
--- Nút 3: Fire Remote
-AddContent("TextButton", "TP to LevelRace", [[
-local args = {"LevelRace", 2}
-pcall(function()
-    game:GetService("ReplicatedStorage"):WaitForChild("SoloTowerGamesHandler_StartSTGFunc"):InvokeServer(unpack(args))
-end)
+AddContent("TextButton", "Rejoin Server", [[
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local LP = Players.LocalPlayer
+local placeId = game.PlaceId
+
+-- Rejoin server
+TeleportService:Teleport(placeId, LP)
 ]])
 
 
@@ -566,45 +516,147 @@ end)
 
 
 
--- State
-local enabled = false
-local latest = nil
-local targetGeneration = 0
-local endPodiumDone = 1
-local Players = game:GetService("Players")
-local LP = Players.LocalPlayer
-local Char = LP.Character or LP.CharacterAdded:Wait()
-local HRP = Char:WaitForChild("HumanoidRootPart")
---==============================================--
---      QUÉT CHECKPOINT LIÊN TỤC (0.1s)        --
---==============================================--
 
+
+
+
+
+
+
+
+
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local playerGui = LocalPlayer:WaitForChild("PlayerGui")
+local HUD = playerGui:WaitForChild("HUD")
+local ColorFrame = HUD:WaitForChild("Connect4FrenzyColorFrame")
+local Gradient = ColorFrame.Frame:WaitForChild("UIGradient")
+
+local World = Workspace:WaitForChild("World")
+local MiniGameArenas = World:WaitForChild("MiniGameArenas")
+local ArenaRoot = MiniGameArenas:WaitForChild("Connect4Frenzy")
+
+local CloudsFolder = ArenaRoot.CloudsAndTokenSpawnPoints.Clouds
+local BoardFolder = ArenaRoot.Board
+
+local CloudPlatformCount = 6
+local TeleportDelay = 0.8
+local enabled = false
+
+--========================================================
+-- COLOR FUNCTIONS
+--========================================================
+local function GetTargetColor()
+    return Gradient.Color.Keypoints[1].Value
+end
+
+local function ColorsMatch(c1,c2)
+    return math.floor(c1.R*255) == math.floor(c2.R*255)
+       and math.floor(c1.G*255) == math.floor(c2.G*255)
+       and math.floor(c1.B*255) == math.floor(c2.B*255)
+end
+
+--========================================================
+-- TELEPORT FUNCTION
+--========================================================
+local function TeleportTo(part)
+    if Character and Character.PrimaryPart and part and part:IsA("BasePart") then
+        -- Thêm offset Y để nhân vật đứng cao hơn part
+        local offsetY = 0 -- tăng nếu part quá thấp
+        Character:PivotTo(part.CFrame + Vector3.new(0, offsetY, 0))
+    end
+end
+
+--========================================================
+-- LOOP SCRIPT 1 (Cloud + Board với logic cũ #1)
+--========================================================
+task.spawn(function()
+    while task.wait(TeleportDelay) do
+        if enabled then
+            local matrixColor = GetTargetColor()
+            local targetPlatform = nil
+            
+            for i = 1, CloudPlatformCount do
+                local cloud = CloudsFolder:FindFirstChild("CloudPlatform"..i)
+                if cloud and cloud:FindFirstChild("TokenSpawnPoint") then
+                    local tokenSpawn = cloud.TokenSpawnPoint
+                    local token = tokenSpawn:FindFirstChild("Token")
+                    local coin = token and token:FindFirstChild("C4FCoin")
+                    if coin and ColorsMatch(coin.Color, matrixColor) then
+                        targetPlatform = cloud
+                        break
+                    end
+                end
+            end
+
+            if targetPlatform then
+                TeleportTo(targetPlatform)
+                task.wait(TeleportDelay+0.5)
+            end
+
+            local foundSpot = false
+            for row = 1,4 do
+                for col = 1,4 do
+                    local name = row.."_"..col
+                    local cell = BoardFolder:FindFirstChild(name)
+                    if cell then
+                        local coin
+                        for _,v in ipairs(cell:GetDescendants()) do
+                            if v.Name=="C4FCoin" then coin=v break end
+                        end
+
+                        if not coin or not ColorsMatch(coin.Color, matrixColor) then
+                            TeleportTo(cell)
+                            foundSpot=true
+                            break
+                        end
+                    end
+                end
+                if foundSpot then break end
+            end
+        end
+    end
+end)
+
+--========================================================
+-- LOOP SCRIPT 2 (Cloud + Board với logic cũ #2)
+--========================================================
 task.spawn(function()
     while true do
-        task.wait(0.1)
-        if not enabled then continue end
+        task.wait(0.6)
+        if enabled then
+            local targetColor = GetTargetColor()
+            local foundCloud = false
 
-        local tower = workspace:FindFirstChild("World")
-        tower = tower and tower:FindFirstChild("TowerFolder")
-        if not tower then continue end
+            for _,cloud in ipairs(CloudsFolder:GetChildren()) do
+                local sp = cloud:FindFirstChild("TokenSpawnPoint")
+                local token = sp and sp:FindFirstChild("Token")
+                local coin = token and token:FindFirstChild("C4FCoin")
+                if coin and ColorsMatch(coin.Color,targetColor) then
+                    TeleportTo(sp)
+                    foundCloud=true
+                    break
+                end
+            end
 
-        for _, level in ipairs(tower:GetChildren()) do
-            if level.Name:match("^Level_%d+$") then
-                local cps = level:FindFirstChild("TowerClimbAssets")
-                cps = cps and cps:FindFirstChild("Checkpoints")
-                if cps then
-                    for _, cp in ipairs(cps:GetChildren()) do
-                        local col = cp:FindFirstChild("Collision")
-                        if col and col:IsA("BasePart") then
-                            local y = math.floor(col.Position.Y)
-                            if y ~= -100 and y ~= 100 then
-                                local ok, canTouch = pcall(function() return col.CanTouch end)
-                                if ok and canTouch == true then
-                                    if latest ~= col then
-                                        latest = col
-                                        targetGeneration = targetGeneration + 1
-                                    end
-                                end
+            if not foundCloud then
+                for r=1,4 do
+                    for c=1,4 do
+                        local name = r.."_"..c
+                        local cell = BoardFolder:FindFirstChild(name)
+                        if cell then
+                            local coin
+                            for _,v in ipairs(cell:GetDescendants()) do
+                                if v.Name=="C4FCoin" then coin=v break end
+                            end
+                            if not coin or not ColorsMatch(coin.Color,targetColor) then
+                                TeleportTo(cell)
+                                break
                             end
                         end
                     end
@@ -614,166 +666,68 @@ task.spawn(function()
     end
 end)
 
---==============================================--
---      LOOP TELEPORT – TỰ ĐỔI TARGET NGAY      --
---==============================================--
+--========================================================
+-- GUI ON/OFF
+--========================================================
+local ScreenGui = Instance.new("ScreenGui",game.CoreGui)
+ScreenGui.Name = "C4FAuto"
 
-task.spawn(function()
-    while true do
-        task.wait(0.05)
-        if not enabled then continue end
+local Frame = Instance.new("Frame",ScreenGui)
+Frame.Size = UDim2.new(0,100,0,50)
+Frame.Position = UDim2.new(0.4,0,0.2,30)
+Frame.BackgroundColor3 = Color3.fromRGB(35,35,35)
+Frame.Active = true
+Frame.Draggable = true
 
-        local collectedText = LP.PlayerGui.HUD.BottomFrame.ItemsCollected.CollectedFrame.CollectedText
-        local stopCheckpoint = collectedText and collectedText.Text == "109/110"
+local Toggle = Instance.new("TextButton",Frame)
+Toggle.Size = UDim2.new(1.5,0,0.5,0)
+Toggle.Text = "Auto Connect4Frenzy[OFF]"
+Toggle.BackgroundColor3 = Color3.fromRGB(140,0,0)
+Toggle.TextColor3 = Color3.fromRGB(255,255,255)
 
-        local myGen = targetGeneration
-        local myTarget = latest
-
-        if stopCheckpoint then
-            -- ========================= EndPodium teleport khi 109/110 =========================
-            if endPodiumDone < 2 then
-                local ok, endPart = pcall(function()
-                    return workspace.World.TowerFolder.Level_0.TowerClimbAssets.EndPodium.Part
-                end)
-                if ok and endPart then
-                    for i = 1, 2 do
-                        local original = endPart.CFrame
-                        local upPos = original + Vector3.new(0,10,0)
-                        pcall(function() HRP.CFrame = upPos end)
-                        task.wait(0.35) -- bay lên 10 studs trong 0.35s
-                        pcall(function() HRP.CFrame = original end)
-                        task.wait(0.35) -- trở về EndPodium trong 0.35s
-                        endPodiumDone = endPodiumDone + 1
-                    end
-                end
-            end
-            continue -- bỏ qua toàn bộ checkpoint loop
-        end
-
-        -- nếu chưa tới 109/110 → vẫn teleport checkpoint bình thường
-        local exists, canTouchNow = pcall(function()
-            return myTarget and myTarget.Parent and myTarget.CanTouch
-        end)
-
-        if exists and canTouchNow then
-            pcall(function()
-                if HRP and HRP.Parent then
-                    HRP.CFrame = myTarget.CFrame + Vector3.new(0,3,0)
-                end
-            end)
-
-            local timeout = 2
-            local startTime = os.clock()
-            local timedOut = false
-
-            while enabled do
-                if myGen ~= targetGeneration then break end
-                local ok, curCanTouch = pcall(function() return myTarget and myTarget.Parent and myTarget.CanTouch end)
-                if not ok then break end
-                if curCanTouch == false then break end
-                if (os.clock() - startTime) >= timeout then timedOut = true; break end
-                task.wait(0.05)
-            end
-
-            if enabled and timedOut and myGen == targetGeneration then
-                local ok2, stillThere = pcall(function() return myTarget and myTarget.Parent end)
-                local ok3, stillCanTouch = pcall(function() return myTarget and myTarget.CanTouch end)
-                if ok2 and stillThere and ok3 and stillCanTouch then
-                    local original = HRP.CFrame
-                    if original then
-                        local upPos = original + Vector3.new(0,5,0)
-                        local totalTime = 0.7
-                        local step = 0.05
-                        local steps = math.max(1, math.floor(totalTime/step))
-                        for i = 1, steps do
-                            if not enabled then break end
-                            local alpha = i/steps
-                            pcall(function() HRP.CFrame = original:Lerp(upPos, alpha) end)
-                            task.wait(step)
-                        end
-                        task.wait(0.05)
-                        if enabled then pcall(function() HRP.CFrame = original end) end
-                    end
-                end
-            end
-        end
-    end
-end)
-TextLabel = AddContent("TextLabel")
-TextLabel.Text = ""
-
--- Tạo nút riêng trong Frame2
-local tpBtn = Instance.new("TextButton")
-tpBtn.Size = UDim2.new(0.8,0,0.7,25)
-tpBtn.Position = UDim2.new(0.1,0,ContentPositionZ-7,0)
-tpBtn.Font = Enum.Font.SourceSansBold
-tpBtn.Text = "Auto TownerClimb □"
-tpBtn.TextSize = 18
-tpBtn.TextScaled = true
-tpBtn.TextWrapped = false
---tpBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-tpBtn.TextColor3 = Color3.fromRGB(248,248,248)
-tpBtn.Parent = Frame2
-tpBtn.Visible = false  
-delay(16, function()  
-    tpBtn.Visible = true  
-end)
-
-tpBtn.MouseButton1Click:Connect(function()
+Toggle.MouseButton1Click:Connect(function()
     enabled = not enabled
-    if enabled then
-        local args = {"TowerClimb", -1}
-        pcall(function()
-            game:GetService("ReplicatedStorage").SoloTowerGamesHandler_StartSTGFunc:InvokeServer(unpack(args))
-        end)
-        tpBtn.Text = "Auto TowerClimb ■"
-        -- Hiện warn frame khi bật
-        local ghostGui = game.CoreGui:FindFirstChild("GhostGui")
-        if ghostGui then
-            local warnFrame = Instance.new("Frame")
-            warnFrame.Size = UDim2.new(0, 300, 0, 80)
-            warnFrame.Position = UDim2.new(0.35, 0, 0.4, 0)
-            warnFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-            warnFrame.BorderSizePixel = 0
-            warnFrame.Parent = ghostGui
-            warnFrame.Active = true
-            warnFrame.Draggable = false
+    Toggle.Text = enabled and "Auto Connect4Frenzy[ON]" or "Auto Connect4Frenzy[OFF]"
+    Toggle.BackgroundColor3 = enabled and Color3.fromRGB(0,160,0) or Color3.fromRGB(140,0,0)
+end)
 
-            local corner = Instance.new("UICorner")
-            corner.CornerRadius = UDim.new(0.1, 0)
-            corner.Parent = warnFrame
 
-            local warnLabel = Instance.new("TextLabel")
-            warnLabel.Size = UDim2.new(1, -30, 1, 0)
-            warnLabel.Position = UDim2.new(0, 10, 0, 0)
-            warnLabel.BackgroundTransparency = 1
-            warnLabel.Font = Enum.Font.SourceSansBold
-            warnLabel.TextColor3 = Color3.fromRGB(248, 248, 248)
-            warnLabel.TextSize = 18
-            warnLabel.TextWrapped = true
-            warnLabel.Text = "Warn: 'Auto TowerClimb' Only Works 1 Time During The First Event, Die = No Work. Then You Must Rejoin!"
-            warnLabel.TextXAlignment = Enum.TextXAlignment.Left
-            warnLabel.TextYAlignment = Enum.TextYAlignment.Center
-            warnLabel.Parent = warnFrame
 
-            local closeButton = Instance.new("TextButton")
-            closeButton.Size = UDim2.new(0, 25, 0, 25)
-            closeButton.Position = UDim2.new(1, -30, 0, 5)
-            closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-            closeButton.Font = Enum.Font.SourceSansBold
-            closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-            closeButton.TextSize = 18
-            closeButton.Text = "X"
-            closeButton.Parent = warnFrame
 
-            closeButton.MouseButton1Click:Connect(function()
-                warnFrame:Destroy()
-            end)
-        end
-    else
-        tpBtn.Text = "Auto TowerClimb □"
-        latest = nil
-        targetGeneration = targetGeneration + 1
+
+--========================================================
+-- HOVER TRÊN KHÔNG TRUNG (FULL SCRIPT RIÊNG)
+--========================================================
+
+-- Services
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+-- Player
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+
+--========================================================
+-- Tạo BodyPosition giữ nhân vật yên trên không trung
+--========================================================
+local HoverBP = HumanoidRootPart:FindFirstChild("HoverBP")
+if not HoverBP then
+    HoverBP = Instance.new("BodyPosition")
+    HoverBP.Name = "HoverBP"
+    HoverBP.MaxForce = Vector3.new(1e5, 1e5, 1e5)  -- lực giữ nhân vật
+    HoverBP.P = 1e4      -- độ cứng
+    HoverBP.D = 500       -- giảm chấn
+    HoverBP.Position = HumanoidRootPart.Position  -- vị trí hiện tại
+    HoverBP.Parent = HumanoidRootPart
+end
+
+--========================================================
+-- Loop cập nhật vị trí liên tục
+--========================================================
+RunService.RenderStepped:Connect(function()
+    if HoverBP then
+        -- Cập nhật vị trí để giữ nguyên độ cao
+        HoverBP.Position = HumanoidRootPart.Position
     end
 end)
-TextLabel = AddContent("TextLabel")
