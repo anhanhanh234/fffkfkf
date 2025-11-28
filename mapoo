@@ -487,7 +487,7 @@ AddContent("TextButton", "TP to UGC", [[
 local LP = game:GetService("Players").LocalPlayer
 local HRP = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
 if HRP then
-    HRP.CFrame = CFrame.new(-1428, 94, -552)
+    HRP.CFrame = CFrame.new(588, 31, -225)
 end
 ]])
 
