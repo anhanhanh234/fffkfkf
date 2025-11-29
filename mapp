@@ -1,0 +1,72 @@
+--// SETTINGS
+local DELAY = 0.01
+local SPECIAL_ID = 13
+local SPECIAL_TIMES = 10
+local SatchelStart, SatchelEnd = 1, 14
+local EmeraldStart, EmeraldEnd = 1, 200
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SatchelRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CaseOfTheMissingSatchel:FoundQuestCollectableEvent")
+local EmeraldRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("InventoryService:CollectEmeraldEvent")
+
+--// TEXTLABELS
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Parent = player:WaitForChild("PlayerGui")
+
+-- TextLabel 1
+local label1 = Instance.new("TextLabel")
+label1.Parent = gui
+label1.Size = UDim2.new(0, 300, 0, 30)
+label1.Position = UDim2.new(0.5, -150, 0.40, -20)
+label1.BackgroundTransparency = 0.5
+label1.Text = "by @RbxNayap(YTB)"
+label1.Font = Enum.Font.GothamBold
+label1.TextColor3 = Color3.new(1,1,1)
+label1.TextScaled = true
+
+-- TextLabel 2
+local label2 = Instance.new("TextLabel")
+label2.Parent = gui
+label2.Size = UDim2.new(0, 400, 0, 30)
+label2.Position = UDim2.new(0.5, -200, 0.50, -20)
+label2.BackgroundTransparency = 0.5
+label2.Text = "Getting UGC..."
+label2.Font = Enum.Font.Gotham
+label2.TextColor3 = Color3.new(1,1,1)
+label2.TextScaled = true
+
+--// FIRE LOGIC
+local function FireSequence()
+    -- STEP 1: Satchel 1 → 14 (13 = 10 lần)
+    for i = SatchelStart, SatchelEnd do
+        if i == SPECIAL_ID then
+            for _ = 1, SPECIAL_TIMES do
+                task.spawn(function()
+                    SatchelRemote:FireServer(i)
+                end)
+                task.wait(DELAY)
+            end
+        else
+            task.spawn(function()
+                SatchelRemote:FireServer(i)
+            end)
+            task.wait(DELAY)
+        end
+    end
+
+    -- STEP 2: Emerald 1 → 200
+    for i = EmeraldStart, EmeraldEnd do
+        task.spawn(function()
+            EmeraldRemote:FireServer(i)
+        end)
+        task.wait(DELAY)
+    end
+end
+
+--// START AUTOMATICALLY
+task.spawn(function()
+    FireSequence()
+    -- update TextLabel 2 khi xong
+    label2.Text = "Done! If UGC does not pop up, rejoin!"
+end)
