@@ -48,7 +48,7 @@ if game.PlaceId == TARGET_PLACEID then
     WaitText.TextWrapped = true
     WaitText.Text = "Waiting for Tower to Spawn..."
 
-    task.wait(16)
+    task.wait(0)
     WaitGui:Destroy()
 end
 
