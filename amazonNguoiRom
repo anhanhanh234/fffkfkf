@@ -1,0 +1,21 @@
+-- Create ScreenGui
+local gui = Instance.new("ScreenGui")
+gui.Parent = game.CoreGui
+gui.ResetOnSpawn = false
+
+-- Create TextLabel
+local label = Instance.new("TextLabel")
+label.Parent = gui
+label.Size = UDim2.new(0, 600, 0, 60)
+label.Position = UDim2.new(0.5, -300, 0.5, -30)
+label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+label.BackgroundTransparency = 0.5
+label.Text = "Script has been removed because the UGC is out of stock"
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.Font = Enum.Font.GothamBold
+label.TextScaled = true
+
+-- Destroy after 5 seconds
+task.delay(6, function()
+    gui:Destroy()
+end)
