@@ -262,7 +262,7 @@ task.spawn(function()
 
                             if cf then
                                 TeleportTo(cf)
-                                task.wait(1.5)
+                                task.wait(0.5)
                             end
                         end
                     end
@@ -270,7 +270,7 @@ task.spawn(function()
             end
         end)
 
-        task.wait(8)
+        task.wait(0.5)
     end
 end)
 
@@ -339,12 +339,12 @@ task.spawn(function()
 
                     if cf then
                         TpTo(cf)
-                        task.wait(2) -- nhẹ tránh lag
+                        task.wait(0.1) -- nhẹ tránh lag
                     end
                 end
             end
         end)
 
-        task.wait(5) -- lặp mỗi 5 giây
+        task.wait(0.1) -- lặp mỗi 5 giây
     end
 end)
