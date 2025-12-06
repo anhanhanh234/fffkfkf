@@ -262,7 +262,7 @@ task.spawn(function()
 
                             if cf then
                                 TeleportTo(cf)
-                                task.wait(0.5)
+                                task.wait(1)
                             end
                         end
                     end
@@ -270,7 +270,7 @@ task.spawn(function()
             end
         end)
 
-        task.wait(1)
+        task.wait(8)
     end
 end)
 
@@ -296,4 +296,55 @@ task.spawn(function()
     TextLabel.Size = UDim2.new(0.4, 0, 0.06, 0)
     TextLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
     TextLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+end)
+
+
+
+
+
+
+--// AUTO TP TỚI MỌI COINPART TRONG COINSPAWNERS
+task.spawn(function()
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+
+    local function TpTo(cf)
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            char.HumanoidRootPart.CFrame = cf + Vector3.new(0, 3, 0)
+        end
+    end
+
+    while true do
+        pcall(function()
+            -- Lấy thư mục Spawners
+            local spawnerFolder = workspace:FindFirstChild("Spawners")
+            if not spawnerFolder then return end
+
+            local coinSpawners = spawnerFolder:FindFirstChild("CoinSpawners")
+            if not coinSpawners then return end
+
+            -- Quét tất cả
+            for _, child in ipairs(coinSpawners:GetDescendants()) do
+                if child.Name == "CoinPart" then
+                    
+                    -- CoinPart có thể là Part / MeshPart / Model.PrimaryPart
+                    local cf = nil
+
+                    if child:IsA("BasePart") then
+                        cf = child.CFrame
+                    elseif child:IsA("Model") and child.PrimaryPart then
+                        cf = child.PrimaryPart.CFrame
+                    end
+
+                    if cf then
+                        TpTo(cf)
+                        task.wait(2) -- nhẹ tránh lag
+                    end
+                end
+            end
+        end)
+
+        task.wait(5) -- lặp mỗi 5 giây
+    end
 end)
