@@ -1,0 +1,69 @@
+--// CONFIG
+
+--===[ QueueOnTeleport Loader ]===--
+local QueueOnTeleport = queue_on_teleport or syn.queue_on_teleport
+local SCRIPT_URL = "https://raw.githubusercontent.com/anhanhanh234/fffkfkf/refs/heads/main/walk4UGC"
+
+pcall(function()
+    if QueueOnTeleport then
+        QueueOnTeleport("loadstring(game:HttpGet('"..SCRIPT_URL.."'))()")
+    end
+end)
+
+local TP_POS_1 = Vector3.new(93296, 5, 18)
+local TP_POS_2 = Vector3.new(93268, 4, 10)
+local LOOP_TELEPORT = 2         -- lặp 2 lần rồi rejoin
+local WALK_TIME = 3             -- thời gian đi vòng vòng mỗi lần
+
+--// SERVICES
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+local LocalPlayer = Players.LocalPlayer
+
+--// LẤY HRP
+local function getHRP()
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    return char:WaitForChild("HumanoidRootPart")
+end
+
+--// HÀM ĐI VÒNG VÒNG NGẪU NHIÊN
+local function randomWalk(duration)
+    local char = LocalPlayer.Character
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not hum then return end
+
+    local startTime = tick()
+    while tick() - startTime < duration do
+        hum:Move(Vector3.new(math.random(-1,1), 0, math.random(-1,1)), true)
+        task.wait(0.3)
+    end
+    hum:Move(Vector3.new(0,0,0), true) -- dừng lại
+end
+
+--// HÀM TELEPORT TỚI VỊ TRÍ
+local function tpTo(pos)
+    local hrp = getHRP()
+    hrp.CFrame = CFrame.new(pos)
+end
+
+--// MAIN LOOP (2 LẦN)
+task.spawn(function()
+    for i = 1, LOOP_TELEPORT do
+        -- đi vòng vòng
+        randomWalk(WALK_TIME)
+
+        -- teleport 1
+        tpTo(TP_POS_1)
+        task.wait(1)
+
+        -- đi tiếp 1 chút
+        randomWalk(WALK_TIME)
+
+        -- teleport 2
+        tpTo(TP_POS_2)
+        task.wait(1)
+    end
+
+    -- REJOIN SAU KHI LẶP 2 LẦN
+    TeleportService:Teleport(game.PlaceId)
+end)
