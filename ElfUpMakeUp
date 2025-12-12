@@ -1,0 +1,371 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local playerName = LocalPlayer.Name
+local playerID = LocalPlayer.UserId
+
+
+-------------------------------------------------
+-- UI “Craft!”
+-------------------------------------------------
+local function CanCraft()
+    local ui
+    pcall(function()
+        ui = LocalPlayer.PlayerGui.HudCore.HudCore.CenterCenter.Crafting.MiddleCraftingPanel.Craft.ButtonImage.TextLabel
+    end)
+    return ui and ui.Text == "Craft!"
+end
+
+
+-------------------------------------------------
+-- FIND PLOT
+-------------------------------------------------
+local function FindCorrectPlot()
+    local starter = workspace:WaitForChild("TycoonPlots"):WaitForChild("Starter")
+
+    for plot = 1, 7 do
+        local folder = starter:FindFirstChild(tostring(plot))
+        if folder then
+            for _, tycoon in ipairs(folder:GetChildren()) do
+                if tycoon:IsA("Model") then
+                    local correctName = string.format(
+                        "%s's Tycoon [Zone: Starter, Plot: %d, User: %d]",
+                        playerName, plot, playerID
+                    )
+                    if tycoon.Name == correctName then
+                        return plot
+                    end
+                end
+            end
+        end
+    end
+    return nil
+end
+
+
+-------------------------------------------------
+-- GET TYCOON
+-------------------------------------------------
+local function GetTycoon(plot)
+    local tycoonName = string.format(
+        "%s's Tycoon [Zone: Starter, Plot: %d, User: %d]",
+        playerName, plot, playerID
+    )
+
+    local ok, model = pcall(function()
+        return workspace.TycoonPlots.Starter[tostring(plot)]:WaitForChild(tycoonName)
+    end)
+
+    return ok and model or nil
+end
+
+
+local playerPlot = FindCorrectPlot()
+if not playerPlot then
+    warn("Không tìm thấy plot!")
+    return
+end
+
+
+-------------------------------------------------
+-- FIND CASH REGISTER
+-------------------------------------------------
+local function FindCashRegister(tycoon)
+    if not tycoon then return nil end
+    local buildings = tycoon:FindFirstChild("Buildings")
+    if not buildings then return nil end
+
+    for _, b in ipairs(buildings:GetChildren()) do
+        if b:IsA("Model") then
+            local ppAttach = b:FindFirstChild("ProximityPromptAttachment")
+            if ppAttach and ppAttach:FindFirstChild("ProximityPrompt") then
+                return ppAttach.ProximityPrompt
+            end
+        end
+    end
+
+    return nil
+end
+
+
+-------------------------------------------------
+-- AUTO CRAFT
+-------------------------------------------------
+task.spawn(function()
+    while true do
+        local tycoon = GetTycoon(playerPlot)
+
+        if tycoon then
+            if not CanCraft() then
+                pcall(function()
+                    tycoon.Buildings.MakeupCraftingStation_Small.CraftingStation_RemoteComponent.RF.SetIngredient:InvokeServer(1, "Clay")
+                end)
+
+                pcall(function()
+                    tycoon.Buildings.MakeupCraftingStation_Small.CraftingStation_RemoteComponent.RF.SetIngredient:InvokeServer(2, "Clay")
+                end)
+            end
+
+            pcall(function()
+                tycoon.Buildings.MakeupCraftingStation_Small.CraftingStation_RemoteComponent.RF.ContributeCraftingProgress:InvokeServer()
+            end)
+
+            pcall(function()
+                tycoon.Buildings.DisplayTable_1.StockableContainer_RemoteComponent.RF.AttemptStockItem:InvokeServer("Clay_Clay")
+            end)
+
+            pcall(function()
+                task.spawn(function()
+                    for amount = 20, 200 do
+                        pcall(function()
+                            game.ReplicatedStorage.src.Packages["_Index"]["raild3x_netwire@0.3.4"]
+                                .netwire.Remotes.OrderService.RF.OrderIndividualIngredients
+                                :InvokeServer("Clay", amount, "Default", true)
+                        end)
+                    end
+                end)
+            end)
+        end
+
+        task.wait()
+    end
+end)
+
+
+-------------------------------------------------
+-- SPAM CONTRIBUTE
+-------------------------------------------------
+for i = 1, 100 do
+    task.spawn(function()
+        while true do
+            local plot = FindCorrectPlot()
+            local tycoon = plot and GetTycoon(plot)
+
+            if tycoon then
+                pcall(function()
+                    tycoon.Buildings.MakeupCraftingStation_Small
+                        .CraftingStation_RemoteComponent.RF.ContributeCraftingProgress
+                        :InvokeServer()
+                end)
+            end
+
+            task.wait()
+        end
+    end)
+end
+
+
+-------------------------------------------------
+-- CASH REGISTER
+-------------------------------------------------
+task.spawn(function()
+    while true do
+        local plot = FindCorrectPlot()
+        local tycoon = plot and GetTycoon(plot)
+        if tycoon then
+            local prompt = FindCashRegister(tycoon)
+            if prompt then
+                pcall(function()
+                    fireproximityprompt(prompt)
+                end)
+            end
+        end
+        task.wait(10)
+    end
+end)
+
+
+-------------------------------------------------
+-- TRASH CLEANER
+-------------------------------------------------
+task.spawn(function()
+    while true do
+        local plot = FindCorrectPlot()
+        local tycoon = plot and GetTycoon(plot)
+
+        if tycoon then
+            local trashFolder = tycoon:FindFirstChild("Trash")
+
+            if trashFolder then
+                for _, trash in ipairs(trashFolder:GetChildren()) do
+                    if trash:IsA("Model") and trash:FindFirstChild("Attachment") then
+                        local prompt = trash.Attachment:FindFirstChild("ProximityPrompt")
+                        if prompt then
+                            pcall(function()
+                                LocalPlayer.Character.HumanoidRootPart.CFrame =
+                                    trash.Attachment.WorldCFrame + Vector3.new(0, 2, 0)
+                            end)
+
+                            pcall(function()
+                                fireproximityprompt(prompt)
+                            end)
+                        end
+                    end
+                end
+            end
+        end
+
+        task.wait(1)
+    end
+end)
+
+
+print("MODULE OK")
+
+
+-------------------------------------------------
+-- AUTO TELEPORT SPAWNS
+-------------------------------------------------
+local function TeleportTo(cf)
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = cf + Vector3.new(0, 3, 0)
+    end
+end
+
+task.spawn(function()
+    while true do
+        pcall(function()
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if obj.Name == "NWSLv2SoccerBallSpawners" then
+                    for _, spawn in ipairs(obj:GetDescendants()) do
+                        if spawn.Name == "Spawn" then
+                            local cf
+
+                            if spawn:IsA("BasePart") then cf = spawn.CFrame end
+                            if spawn:IsA("Model") and spawn.PrimaryPart then cf = spawn.PrimaryPart.CFrame end
+                            if spawn:IsA("Attachment") then cf = spawn.WorldCFrame end
+
+                            if cf then
+                                TeleportTo(cf)
+                                task.wait(0.5)
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+
+        task.wait(0.5)
+    end
+end)
+
+
+-------------------------------------------------
+-- UI CREDIT
+-------------------------------------------------
+task.spawn(function()
+    local gui = Instance.new("ScreenGui", LocalPlayer.PlayerGui)
+    gui.ResetOnSpawn = false
+    gui.Name = "CreditGui"
+
+    local txt = Instance.new("TextLabel", gui)
+    txt.Text = "by @RbxNayap on Youtube"
+    txt.BackgroundTransparency = 0.5
+    txt.TextColor3 = Color3.new(1,1,1)
+    txt.TextScaled = true
+    txt.Size = UDim2.new(0.4,0,0.06,0)
+    txt.Position = UDim2.new(0.5,0,0.45,0)
+    txt.AnchorPoint = Vector2.new(0.5,0.5)
+end)
+
+
+-------------------------------------------------
+-- AUTO TP COIN
+-------------------------------------------------
+task.spawn(function()
+    while true do
+        pcall(function()
+            local spawnerFolder = workspace:FindFirstChild("Spawners")
+            if not spawnerFolder then return end
+
+            local coinSpawners = spawnerFolder:FindFirstChild("CoinSpawners")
+            if not coinSpawners then return end
+
+            for _, child in ipairs(coinSpawners:GetDescendants()) do
+                if child.Name == "CoinPart" then
+                    local cf
+
+                    if child:IsA("BasePart") then cf = child.CFrame end
+                    if child:IsA("Model") and child.PrimaryPart then cf = child.PrimaryPart.CFrame end
+
+                    if cf then
+                        TeleportTo(cf)
+                        task.wait(0.1)
+                    end
+                end
+            end
+        end)
+
+        task.wait(0.1)
+    end
+end)
+
+
+
+------------------------------------------------------------
+-- ⭐⭐ GUI ON/OFF + AUTO TP COLLECTIBLE ⭐⭐
+------------------------------------------------------------
+local CollectibleEnabled = false
+
+-- GUI
+local gui = Instance.new("ScreenGui", LocalPlayer.PlayerGui)
+gui.Name = "CollectibleToggle"
+gui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 180, 0, 60)
+frame.Position = UDim2.new(0.1, 0, 0.3, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+frame.Active = true
+frame.Draggable = true
+
+local btn = Instance.new("TextButton", frame)
+btn.Size = UDim2.new(1,0,1,0)
+btn.Text = "Collect Ball: OFF"
+btn.BackgroundColor3 = Color3.fromRGB(80,0,0)
+btn.TextScaled = true
+btn.TextColor3 = Color3.new(1,1,1)
+
+btn.MouseButton1Click:Connect(function()
+    CollectibleEnabled = not CollectibleEnabled
+    if CollectibleEnabled then
+        btn.Text = "Collect Ball: ON"
+        btn.BackgroundColor3 = Color3.fromRGB(0,120,0)
+    else
+        btn.Text = "Collect Ball: OFF"
+        btn.BackgroundColor3 = Color3.fromRGB(80,0,0)
+    end
+end)
+
+
+-- AUTO TP COLLECTIBLE (theo ON/OFF)
+task.spawn(function()
+    while true do
+        if CollectibleEnabled then
+            pcall(function()
+                local spawners = workspace:FindFirstChild("Spawners")
+                if not spawners then return end
+
+                local soccer = spawners:FindFirstChild("NWSLv2SoccerBallSpawners")
+                if not soccer then return end
+
+                for _, obj in ipairs(soccer:GetDescendants()) do
+                    if obj.Name:lower():find("collectible") then
+                        local cf
+
+                        if obj:IsA("BasePart") then cf = obj.CFrame end
+                        if obj:IsA("Model") and obj.PrimaryPart then cf = obj.PrimaryPart.CFrame end
+                        if obj:IsA("Attachment") then cf = obj.WorldCFrame end
+
+                        if cf then
+                            TeleportTo(cf)
+                            task.wait(0.2)
+                        end
+                    end
+                end
+            end)
+        end
+
+        task.wait(0.2)
+    end
+end)
