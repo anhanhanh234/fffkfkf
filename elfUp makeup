@@ -315,6 +315,19 @@ task.spawn(function()
         end
     end
 
+    --// AUTO TP MỌI COLLECTIBLE BÊN TRONG NWSLv2SoccerBallSpawners
+--// AUTO TP TỚI MỌI COINPART TRONG COINSPAWNERS
+task.spawn(function()
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+
+    local function TpTo(cf)
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            char.HumanoidRootPart.CFrame = cf + Vector3.new(0, 3, 0)
+        end
+    end
+
     while true do
         pcall(function()
             -- Lấy thư mục Spawners
@@ -324,13 +337,9 @@ task.spawn(function()
             local coinSpawners = spawnerFolder:FindFirstChild("CoinSpawners")
             if not coinSpawners then return end
 
-            -- Quét tất cả
             for _, child in ipairs(coinSpawners:GetDescendants()) do
                 if child.Name == "CoinPart" then
-                    
-                    -- CoinPart có thể là Part / MeshPart / Model.PrimaryPart
                     local cf = nil
-
                     if child:IsA("BasePart") then
                         cf = child.CFrame
                     elseif child:IsA("Model") and child.PrimaryPart then
@@ -339,12 +348,47 @@ task.spawn(function()
 
                     if cf then
                         TpTo(cf)
-                        task.wait(0.1) -- nhẹ tránh lag
+                        task.wait(0.1)
                     end
                 end
             end
         end)
 
-        task.wait(0.1) -- lặp mỗi 5 giây
+        task.wait(0.1)
+    end
+end)   -- <<< 🟢 ĐÚNG — đóng task.spawn AutoCoin
+
+
+--// AUTO TP MỌI COLLECTIBLE BÊN TRONG NWSLv2SoccerBallSpawners
+task.spawn(function()
+    while true do
+        pcall(function()
+            local spawners = workspace:FindFirstChild("Spawners")
+            if not spawners then return end
+
+            local soccer = spawners:FindFirstChild("NWSLv2SoccerBallSpawners")
+            if not soccer then return end
+
+            for _, obj in ipairs(soccer:GetDescendants()) do
+                if obj.Name:lower():find("collectible") then
+                    local cf
+
+                    if obj:IsA("BasePart") then
+                        cf = obj.CFrame
+                    elseif obj:IsA("Model") and obj.PrimaryPart then
+                        cf = obj.PrimaryPart.CFrame
+                    elseif obj:IsA("Attachment") then
+                        cf = obj.WorldCFrame
+                    end
+
+                    if cf then
+                        LocalPlayer.Character.HumanoidRootPart.CFrame = cf + Vector3.new(0,3,0)
+                        task.wait(0.2)
+                    end
+                end
+            end
+        end)
+
+        task.wait(0.2)
     end
 end)
