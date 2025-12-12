@@ -315,51 +315,8 @@ task.spawn(function()
         end
     end
 
-    --// AUTO TP MỌI COLLECTIBLE BÊN TRONG NWSLv2SoccerBallSpawners
---// AUTO TP TỚI MỌI COINPART TRONG COINSPAWNERS
-task.spawn(function()
-    local Players = game:GetService("Players")
-    local LocalPlayer = Players.LocalPlayer
+    
 
-    local function TpTo(cf)
-        local char = LocalPlayer.Character
-        if char and char:FindFirstChild("HumanoidRootPart") then
-            char.HumanoidRootPart.CFrame = cf + Vector3.new(0, 3, 0)
-        end
-    end
-
-    while true do
-        pcall(function()
-            -- Lấy thư mục Spawners
-            local spawnerFolder = workspace:FindFirstChild("Spawners")
-            if not spawnerFolder then return end
-
-            local coinSpawners = spawnerFolder:FindFirstChild("CoinSpawners")
-            if not coinSpawners then return end
-
-            for _, child in ipairs(coinSpawners:GetDescendants()) do
-                if child.Name == "CoinPart" then
-                    local cf = nil
-                    if child:IsA("BasePart") then
-                        cf = child.CFrame
-                    elseif child:IsA("Model") and child.PrimaryPart then
-                        cf = child.PrimaryPart.CFrame
-                    end
-
-                    if cf then
-                        TpTo(cf)
-                        task.wait(0.1)
-                    end
-                end
-            end
-        end)
-
-        task.wait(0.1)
-    end
-end)   -- <<< 🟢 ĐÚNG — đóng task.spawn AutoCoin
-
-
---// AUTO TP MỌI COLLECTIBLE BÊN TRONG NWSLv2SoccerBallSpawners
 task.spawn(function()
     while true do
         pcall(function()
@@ -382,7 +339,7 @@ task.spawn(function()
                     end
 
                     if cf then
-                        LocalPlayer.Character.HumanoidRootPart.CFrame = cf + Vector3.new(0,3,0)
+                        TeleportTo(cf)
                         task.wait(0.2)
                     end
                 end
