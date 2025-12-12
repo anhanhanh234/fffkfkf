@@ -313,7 +313,7 @@ gui.Name = "CollectibleToggle"
 gui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 50, 0, 20)
+frame.Size = UDim2.new(0, 120, 0, 50)
 frame.Position = UDim2.new(0.1, 0, 0.3, 0)
 frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
 frame.Active = true
