@@ -259,7 +259,7 @@ task.spawn(function()
     gui.Name = "CreditGui"
 
     local txt = Instance.new("TextLabel", gui)
-    txt.Text = "by @RbxNayap on Youtube"
+    txt.Text = "Crafting, Selling perfume. Cashiering, trash cleaning, coin collecting!"
     txt.BackgroundTransparency = 0.5
     txt.TextColor3 = Color3.new(1,1,1)
     txt.TextScaled = true
@@ -313,7 +313,7 @@ gui.Name = "CollectibleToggle"
 gui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 180, 0, 60)
+frame.Size = UDim2.new(0, 50, 0, 20)
 frame.Position = UDim2.new(0.1, 0, 0.3, 0)
 frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
 frame.Active = true
@@ -321,7 +321,7 @@ frame.Draggable = true
 
 local btn = Instance.new("TextButton", frame)
 btn.Size = UDim2.new(1,0,1,0)
-btn.Text = "Collect Ball: OFF"
+btn.Text = "Collect Soccer Balls: OFF"
 btn.BackgroundColor3 = Color3.fromRGB(80,0,0)
 btn.TextScaled = true
 btn.TextColor3 = Color3.new(1,1,1)
@@ -329,10 +329,10 @@ btn.TextColor3 = Color3.new(1,1,1)
 btn.MouseButton1Click:Connect(function()
     CollectibleEnabled = not CollectibleEnabled
     if CollectibleEnabled then
-        btn.Text = "Collect Ball: ON"
+        btn.Text = "Collect Soccer Balls: ON"
         btn.BackgroundColor3 = Color3.fromRGB(0,120,0)
     else
-        btn.Text = "Collect Ball: OFF"
+        btn.Text = "Collect Soccer Balls: OFF"
         btn.BackgroundColor3 = Color3.fromRGB(80,0,0)
     end
 end)
