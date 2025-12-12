@@ -259,7 +259,7 @@ task.spawn(function()
     gui.Name = "CreditGui"
 
     local txt = Instance.new("TextLabel", gui)
-    txt.Text = "Crafting, Selling perfume. Cashiering, trash cleaning, coin collecting!"
+    txt.Text = "by @RbxNayap on Youtube"
     txt.BackgroundTransparency = 0.5
     txt.TextColor3 = Color3.new(1,1,1)
     txt.TextScaled = true
